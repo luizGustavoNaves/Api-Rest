@@ -37,6 +37,7 @@ public class MedicoController {
      // Para selecionar quantos dados irá me retornar usamos na URL da requisição o ?size= & para selecionar qual página eu quero que o dado seja apresentado usamos page= (size= & page=)
      // Para ordenar por NOME por exemplo usamos ?sort=nome ou para ordenar por qualquer outro atributo usamos ?sort=ATRIBUTO usando o desc para colocar em ordem decrescente ?sort=crm,desc
      public ResponseEntity <Page<DadosListagemMedico>> listar(Pageable paginacao){
+
          var page = repository.findAllByAtivoTrue(paginacao).map(DadosListagemMedico::new);
 
          return ResponseEntity.ok(page);
