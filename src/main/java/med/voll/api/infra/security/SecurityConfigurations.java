@@ -25,16 +25,18 @@ public class SecurityConfigurations {
                 //O csrf() desabilita o Cross-Site Request Forgery (Ataque de Cross-Site Request Forgery)
                 @Bean
                 public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-                    return
-                            http.csrf(csrf -> csrf.disable())
-                                    .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                                    .authorizeHttpRequests(req -> {
-                                        req.requestMatchers("/login").permitAll();
-                                        req.anyRequest().authenticated();
-                                    })
-                                    .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-                                    .build();
+                    return http.csrf(csrf -> csrf.disable())
+                            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                            .authorizeHttpRequests(req -> {
+                                req.requestMatchers(HttpMethod.POST, "/login").permitAll();
+                                req.anyRequest().authenticated();
+                            })
+                            //setando a ordem dos filtros
+                            .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                            .build();
                 }
+
+
 
     @Bean
     //O @Bean serve para exportar uma classe para o Spring, fazendo com que ele consiga carregar e realize a injecão de dependência en outras classes

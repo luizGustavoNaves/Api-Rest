@@ -25,18 +25,16 @@ public class SecurityFilter extends OncePerRequestFilter {
     //Garante que o filtro seja executado apenas uma vez
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         var tokenJWT = recuperarToken(request);
 
        if (tokenJWT != null) {
            var subject = tokenService.getSubject(tokenJWT);
            var usuario = repository.findByLogin(subject);
 
+           //forçando a autentificação do usuario através da verificação do token (permissão de login)
            var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
            SecurityContextHolder.getContext().setAuthentication(authentication);
-
        }
-
        filterChain.doFilter(request, response);
     }
 
@@ -44,8 +42,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         var authorizationHeader = request.getHeader( "Authorization" );
 
         if (authorizationHeader != null) {
-            //Aqui tinha um espaço em branco no segundo parametro do metodo replace (deve ser uma string vazia mesmo, sem espacos):
-            return authorizationHeader.replace("Bearer ", "").trim();
+            return authorizationHeader.replace("Bearer ", "");
         }
         return null;
     }
